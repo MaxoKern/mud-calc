@@ -4,7 +4,7 @@ Works with no signal once installed. Nothing is saved or sent anywhere.
 
 ## Install (one time, needs signal)
 1. Open this link **in Safari** (not Chrome or Gmail's built-in browser):
-   `https://<github-username>.github.io/mud-calc/`
+   `https://maxokern.github.io/mud-calc/`
 2. Tap the **Share** button (square with an up arrow).
 3. Scroll down and tap **Add to Home Screen** → **Add**.
 4. Open **Mud Calc** from the new home-screen icon once.
