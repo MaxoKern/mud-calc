@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mud Calc</title>
+<meta name="description" content="Offline mud tank air-gap to barrels and gallons calculator.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mud Calc">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#0f1720">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  :root {
+    --bg: #f2f4f7;
+    --card: #ffffff;
+    --text: #0b0f14;
+    --muted: #5b6573;
+    --line: #d5dae1;
+    --accent: #b45309;
+    --accent-text: #ffffff;
+    --error: #b91c1c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1720;
+      --card: #18222e;
+      --text: #f5f7fa;
+      --muted: #9aa6b4;
+      --line: #2b3847;
+      --accent: #f59e0b;
+      --accent-text: #0b0f14;
+      --error: #f87171;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    padding: calc(env(safe-area-inset-top) + 16px) calc(env(safe-area-inset-right) + 16px)
+             calc(env(safe-area-inset-bottom) + 16px) calc(env(safe-area-inset-left) + 16px);
+  }
+  main {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  h1 {
+    margin: 4px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px 20px;
+  }
+  label {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .input-row { display: flex; align-items: baseline; gap: 8px; }
+  input {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    font: inherit;
+    font-size: 56px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid var(--accent);
+    border-radius: 0;
+    padding: 4px 0;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input::placeholder { color: var(--line); }
+  .unit { font-size: 28px; font-weight: 600; color: var(--muted); }
+  .result-label { font-size: 18px; font-weight: 600; color: var(--muted); }
+  .result {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .result.secondary { font-size: 44px; font-weight: 700; }
+  .result .u { font-size: 24px; font-weight: 600; color: var(--muted); margin-left: 6px; }
+  .depth { font-size: 18px; color: var(--muted); margin-top: 4px; min-height: 1.4em; }
+  .error { color: var(--error); font-size: 22px; font-weight: 700; min-height: 1.4em; margin-top: 8px; }
+  button {
+    font: inherit;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-text);
+    background: var(--accent);
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    width: 100%;
+    cursor: pointer;
+  }
+  button:active { opacity: 0.8; }
+  footer {
+    margin-top: auto;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Mud Tank Calculator</h1>
+
+  <div class="card">
+    <label for="gap">Air gap</label>
+    <div class="input-row">
+      <input id="gap" type="text" inputmode="decimal" autocomplete="off" autocorrect="off"
+             spellcheck="false" placeholder="0" aria-describedby="err" autofocus>
+      <span class="unit">in</span>
+    </div>
+    <div id="err" class="error" role="alert"></div>
+  </div>
+
+  <div class="card" aria-live="polite">
+    <div class="result-label">Barrels</div>
+    <div class="result"><span id="bbl">&ndash;</span><span class="u">bbl</span></div>
+    <div class="result-label" style="margin-top:12px">Gallons</div>
+    <div class="result secondary"><span id="gal">&ndash;</span><span class="u">gal</span></div>
+    <div id="depth" class="depth"></div>
+  </div>
+
+  <button id="clear" type="button">Clear</button>
+
+  <footer>116 in tank &middot; 42 gal/bbl &middot; chart from Tank_Air_Gap_Calculator.xlsx</footer>
+</main>
+
+<script src="calc.js"></script>
+<script>
+  var gapEl = document.getElementById('gap');
+  var bblEl = document.getElementById('bbl');
+  var galEl = document.getElementById('gal');
+  var depthEl = document.getElementById('depth');
+  var errEl = document.getElementById('err');
+  var fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var fmtDepth = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+
+  function render() {
+    var r = calcFromAirGap(gapEl.value);
+    var ok = r && !r.error;
+    bblEl.textContent = ok ? fmt.format(r.barrels) : '–';
+    galEl.textContent = ok ? fmt.format(r.gallons) : '–';
+    depthEl.textContent = ok ? 'Liquid depth: ' + fmtDepth.format(r.depth) + ' in' : '';
+    errEl.textContent = r && r.error ? r.error : '';
+  }
+
+  gapEl.addEventListener('input', render);
+  document.getElementById('clear').addEventListener('click', function () {
+    gapEl.value = '';
+    render();
+    gapEl.focus();
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>
